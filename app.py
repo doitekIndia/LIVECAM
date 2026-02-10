@@ -31,8 +31,8 @@ def index():
     </div>
     <div class="grid">
         <!-- METHOD 1: Single JPEG snapshots (LOADS INSTANTLY) -->
-        <a href="http://196.216.137.142:8080/video.jpg" target="_blank" class="cam">
-            <img src="http://196.216.137.142:8080/video.jpg?r=1" alt="South Africa">
+        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
+            <img src="http://193.253.227.136:8081/mjpg/video.mjpg" alt="South Africa">
             <div class="cam-title">
                 <div class="cam-name">🇿🇦 South Africa Live</div>
                 <div class="status">🟢 HD Stream</div>
@@ -40,8 +40,8 @@ def index():
         </a>
         
         <!-- METHOD 2: EarthCam (ALWAYS works) -->
-        <a href="https://times-square.partybus.com/axis-cgi/mjpg/video.cgi" target="_blank" class="cam">
-            <img src="https://times-square.partybus.com/axis-cgi/mjpg/video.cgi?r=2" alt="Times Square">
+        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
+            <img src="http://193.253.227.136:8081/mjpg/video.mjpg" alt="Times Square">
             <div class="cam-title">
                 <div class="cam-name">🗽 New York Times Square</div>
                 <div class="status">🟢 24/7 Live</div>
@@ -49,8 +49,8 @@ def index():
         </a>
         
         <!-- METHOD 3: Static preview + live link -->
-        <a href="http://81.221.159.177:8081/view/view.shtml?id=18&imagepath=%2Fmjpg%2F1%2Fvideo.mjpg&size=1" target="_blank" class="cam">
-            <img src="https://via.placeholder.com/400x280/333/fff?text=INDIA+LIVE+CAM" alt="India">
+        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
+            <img src="http://193.253.227.136:8081/mjpg/video.mjpg" alt="India">
             <div class="cam-title">
                 <div class="cam-name">🇮🇳 India Live Cam</div>
                 <div class="status">🟢 Click for Live</div>
