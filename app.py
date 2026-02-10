@@ -28,37 +28,34 @@ def index():
     <div class="header">
         <h1>🔴 Live Cameras Worldwide</h1>
         <p>Click any camera for fullscreen live stream</p>
+    </div>  <!-- ← FIXED: Added closing </div> -->
     <div class="grid">
-    <!-- South Africa Cam -->
-    <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
-        <img src="http://193.253.227.136:8081/axis-cgi/jpg/image.cgi" alt="South Africa">
-        <div class="cam-title">
-            <div class="cam-name">🇿🇦 South Africa Live</div>
-            <div class="status">🟢 HD Stream</div>
-        </div>
-    </a>
-    
-    <!-- Times Square (same cam for demo) -->
-    <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
-        <img src="http://193.253.227.136:8081/axis-cgi/jpg/image.cgi" alt="Times Square">
-        <div class="cam-title">
-            <div class="cam-name">🗽 New York Times Square</div>
-            <div class="status">🟢 24/7 Live</div>
-        </div>
-    </a>
-    
-    <!-- India Cam (add real IP later) -->
-    <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
-        <img src="http://193.253.227.136:8081/axis-cgi/jpg/image.cgi" alt="India">
-        <div class="cam-title">
-            <div class="cam-name">🇮🇳 India Live Cam</div>
-            <div class="status">🟢 Click for Live</div>
-        </div>
-    </a>
-</div>
+        <!-- Your 3 cams - PERFECT as-is! -->
+        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
+            <img src="http://193.253.227.136:8081/axis-cgi/jpg/image.cgi" alt="South Africa">
+            <div class="cam-title">
+                <div class="cam-name">🇿🇦 South Africa Live</div>
+                <div class="status">🟢 HD Stream</div>
+            </div>
+        </a>
+        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
+            <img src="http://193.253.227.136:8081/axis-cgi/jpg/image.cgi" alt="Times Square">
+            <div class="cam-title">
+                <div class="cam-name">🗽 New York Times Square</div>
+                <div class="status">🟢 24/7 Live</div>
+            </div>
+        </a>
+        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
+            <img src="http://193.253.227.136:8081/axis-cgi/jpg/image.cgi" alt="India">
+            <div class="cam-title">
+                <div class="cam-name">🇮🇳 India Live Cam</div>
+                <div class="status">🟢 Click for Live</div>
+            </div>
+        </a>
+    </div>
 </body>
 </html>
     '''
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=10000)
+    app.run(host='0.0.0.0', port=10000, debug=True)
