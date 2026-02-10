@@ -130,26 +130,62 @@ if check_admin_access():
         st.markdown("### ✅ **ADMIN CONTROLS**")
         st.markdown(f"**📊 {len(cameras)} cameras loaded**")
         
-        # ADD CAMERA FORM
+        # ADD CAMERA FORM - FIXED PLACEHOLDERS
         st.markdown("### ➕ **Add Camera**")
-        new_name = st.text_input("🏷️ Name")
-        new_snapshot = st.text_input("📸 Snapshot URL")
-        new_stream = st.text_input("🔴 Stream URL")
+        new_name = st.text_input("🏷️ Name", value="🌍 New Camera")
+        new_snapshot = st.text_input("📸 Snapshot URL", 
+            value="http://IP:PORT/axis-cgi/jpg/image.cgi",
+            help="Use /axis-cgi/jpg/image.cgi for thumbnails")
+        new_stream = st.text_input("🔴 Stream URL", 
+            value="http://IP:PORT/axis-cgi/mjpg/video.cgi", 
+            help="Use /axis-cgi/mjpg/video.cgi or /mjpg/video.mjpg for live stream")
         
-        if st.button("✅ ADD CAMERA", use_container_width=True):
-            if all([new_name, new_snapshot, new_stream]):
-                new_cam = {"name": new_name, "snapshot": new_snapshot, "stream": new_stream}
-                st.session_state.cameras.append(new_cam)
-                save_cameras(st.session_state.cameras)
-                st.success("✅ Added!")
+        col1, col2 = st.columns([3,1])
+        with col1:
+            if st.button("✅ ADD CAMERA", use_container_width=True):
+                if all([new_name, new_snapshot, new_stream]):
+                    new_cam = {"name": new_name, "snapshot": new_snapshot, "stream": new_stream}
+                    st.session_state.cameras.append(new_cam)
+                    save_cameras(st.session_state.cameras)
+                    st.success("✅ Added!")
+                    st.rerun()
+                else:
+                    st.error("❌ Fill all fields!")
+        
+        with col2:
+            if st.button("🗑️ Clear", use_container_width=True):
+                st.session_state.cameras = []
+                save_cameras([])
+                st.success("🗑️ Cleared all cameras!")
                 st.rerun()
         
-        # Quick add buttons
-        if st.button("🇳🇴 Add Norway", use_container_width=True):
+        st.markdown("---")
+        
+        # Quick add buttons - FIXED URLS
+        st.markdown("### ⚡ **Quick Add**")
+        if st.button("🇳🇴 Norway Live", use_container_width=True):
             st.session_state.cameras.append({
-                "name": "🇳🇴 Tusten Norway", 
+                "name": "🇳🇴 Tusten Norway Live", 
                 "snapshot": "http://live1.tusten.no:8080/axis-cgi/jpg/image.cgi",
                 "stream": "http://live1.tusten.no:8080/axis-cgi/mjpg/video.cgi"
+            })
+            save_cameras(st.session_state.cameras)
+            st.rerun()
+        
+        if st.button("🇩🇪 Germany Webcam", use_container_width=True):
+            st.session_state.cameras.append({
+                "name": "🇩🇪 Anklam Germany", 
+                "snapshot": "http://webcam.anklam.de/axis-cgi/jpg/image.cgi",
+                "stream": "http://webcam.anklam.de/axis-cgi/mjpg/video.cgi"
+            })
+            save_cameras(st.session_state.cameras)
+            st.rerun()
+        
+        if st.button("🌍 Europe 83.48", use_container_width=True):
+            st.session_state.cameras.append({
+                "name": "🌍 Europe 83.48 Live", 
+                "snapshot": "http://83.48.75.113:8320/axis-cgi/jpg/image.cgi",
+                "stream": "http://83.48.75.113:8320/axis-cgi/mjpg/video.cgi"
             })
             save_cameras(st.session_state.cameras)
             st.rerun()
