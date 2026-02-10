@@ -8,9 +8,9 @@ import numpy as np
 import json
 import os
 
-st.set_page_config(page_title="🔴 LiveCams", layout="wide")
+st.set_page_config(page_title="🔴 LiveCams", layout="wide", initial_sidebar_state="collapsed")
 
-# Your beautiful CSS + HIDE ADD SECTION BY DEFAULT
+# Your beautiful CSS + AUTO-COLLAPSE SIDEBAR
 st.markdown("""
 <style>
 .header{text-align:center;padding:40px;background:linear-gradient(135deg,#ff4444,#cc0000);border-radius:20px;margin-bottom:30px;}
@@ -21,7 +21,9 @@ h1{font-size:3em;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.5);}
 .cam-title{padding:20px;text-align:center;}
 .cam-name{font-size:1.3em;font-weight:600;}
 .status{color:#4CAF50;}
-#admin-section {display: none;}
+/* AUTO-HIDE SIDEBAR WHEN NOT LOGGED IN */
+[data-testid="collapsedControl"] {display: none !important;}
+section[data-testid="stSidebar"] {width: 0px !important;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -75,8 +77,10 @@ def check_admin_access():
     
     # Show login only if not authenticated
     if not st.session_state.authenticated:
+        # Show login button to open sidebar
         with st.sidebar:
             st.markdown("### 🔐 **ADMIN LOGIN**")
+            st.markdown("👆 **Click sidebar icon → Login**")
             username = st.text_input("👤 Username")
             password = st.text_input("🔑 Password", type="password")
             
@@ -87,7 +91,6 @@ def check_admin_access():
                     st.rerun()
                 else:
                     st.error("❌ Wrong credentials!")
-            st.markdown("---")
         return False
     
     return True
@@ -123,14 +126,22 @@ if cameras:
 else:
     st.info("📹 No cameras available")
 
-# 🔐 ADMIN SECTION - HIDDEN BY DEFAULT
+# 🔐 ADMIN SECTION - Only visible after login
 if check_admin_access():
-    # Show admin controls in sidebar
+    # SHOW FULL ADMIN CONTROLS IN SIDEBAR
+    st.markdown("""
+    <style>
+    /* SHOW SIDEBAR WHEN LOGGED IN */
+    [data-testid="collapsedControl"] {display: block !important;}
+    section[data-testid="stSidebar"] {width: 280px !important;}
+    </style>
+    """, unsafe_allow_html=True)
+    
     with st.sidebar:
         st.markdown("### ✅ **ADMIN CONTROLS**")
         st.markdown(f"**📊 {len(cameras)} cameras loaded**")
         
-        # ADD CAMERA FORM - FIXED PLACEHOLDERS
+        # ADD CAMERA FORM
         st.markdown("### ➕ **Add Camera**")
         new_name = st.text_input("🏷️ Name", value="🌍 New Camera")
         new_snapshot = st.text_input("📸 Snapshot URL", 
@@ -138,7 +149,7 @@ if check_admin_access():
             help="Use /axis-cgi/jpg/image.cgi for thumbnails")
         new_stream = st.text_input("🔴 Stream URL", 
             value="http://IP:PORT/axis-cgi/mjpg/video.cgi", 
-            help="Use /axis-cgi/mjpg/video.cgi or /mjpg/video.mjpg for live stream")
+            help="Use /axis-cgi/mjpg/video.cgi or /mjpg/video.mjpg")
         
         col1, col2 = st.columns([3,1])
         with col1:
@@ -149,45 +160,35 @@ if check_admin_access():
                     save_cameras(st.session_state.cameras)
                     st.success("✅ Added!")
                     st.rerun()
-                else:
-                    st.error("❌ Fill all fields!")
         
         with col2:
             if st.button("🗑️ Clear", use_container_width=True):
                 st.session_state.cameras = []
                 save_cameras([])
-                st.success("🗑️ Cleared all cameras!")
+                st.success("🗑️ Cleared!")
                 st.rerun()
         
         st.markdown("---")
         
-        # Quick add buttons - FIXED URLS
-        st.markdown("### ⚡ **Quick Add**")
-        if st.button("🇳🇴 Norway Live", use_container_width=True):
-            st.session_state.cameras.append({
-                "name": "🇳🇴 Tusten Norway Live", 
-                "snapshot": "http://live1.tusten.no:8080/axis-cgi/jpg/image.cgi",
-                "stream": "http://live1.tusten.no:8080/axis-cgi/mjpg/video.cgi"
-            })
-            save_cameras(st.session_state.cameras)
-            st.rerun()
+        # 🔥 GOOGLE DORK SEARCH BUTTON
+        st.markdown("### 🔍 **Find New Cameras**")
+        st.info("`inurl:\"/axis-cgi/mjpg/video.cgi\"` results")
         
-        if st.button("🇩🇪 Germany Webcam", use_container_width=True):
-            st.session_state.cameras.append({
-                "name": "🇩🇪 Anklam Germany", 
-                "snapshot": "http://webcam.anklam.de/axis-cgi/jpg/image.cgi",
-                "stream": "http://webcam.anklam.de/axis-cgi/mjpg/video.cgi"
-            })
+        if st.button("🔍 **Add 5 Axis Cameras**", use_container_width=True):
+            new_cameras = [
+                {"name": "🌍 Europe 83.48", "snapshot": "http://83.48.75.113:8320/axis-cgi/jpg/image.cgi", "stream": "http://83.48.75.113:8320/axis-cgi/mjpg/video.cgi"},
+                {"name": "🇳🇴 Tusten Norway", "snapshot": "http://live1.tusten.no:8080/axis-cgi/jpg/image.cgi", "stream": "http://live1.tusten.no:8080/axis-cgi/mjpg/video.cgi"},
+                {"name": "🇩🇪 Anklam Germany", "snapshot": "http://webcam.anklam.de/axis-cgi/jpg/image.cgi", "stream": "http://webcam.anklam.de/axis-cgi/mjpg/video.cgi"},
+                {"name": "🇺🇸 USA 50.245", "snapshot": "http://50.245.40.138:51695/axis-cgi/jpg/image.cgi", "stream": "http://50.245.40.138:51695/axis-cgi/mjpg/video.cgi"},
+                {"name": "🌐 Dynamic DNS", "snapshot": "http://abcmaingate.dyndns.info:8083/axis-cgi/jpg/image.cgi", "stream": "http://abcmaingate.dyndns.info:8083/axis-cgi/mjpg/video.cgi"}
+            ]
+            added_count = 0
+            for cam in new_cameras:
+                if cam not in st.session_state.cameras:
+                    st.session_state.cameras.append(cam)
+                    added_count += 1
             save_cameras(st.session_state.cameras)
-            st.rerun()
-        
-        if st.button("🌍 Europe 83.48", use_container_width=True):
-            st.session_state.cameras.append({
-                "name": "🌍 Europe 83.48 Live", 
-                "snapshot": "http://83.48.75.113:8320/axis-cgi/jpg/image.cgi",
-                "stream": "http://83.48.75.113:8320/axis-cgi/mjpg/video.cgi"
-            })
-            save_cameras(st.session_state.cameras)
+            st.success(f"✅ Added {added_count} cameras!")
             st.rerun()
         
         st.markdown("---")
@@ -195,7 +196,7 @@ if check_admin_access():
             st.session_state.authenticated = False
             st.rerun()
 
-# Quick stats
+# Stats
 st.markdown("---")
 col1, col2 = st.columns(2)
 col1.metric("📹 Total Cameras", len(cameras))
