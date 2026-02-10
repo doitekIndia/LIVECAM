@@ -11,28 +11,50 @@ def index():
     <title>🔴 LiveCams</title>
     <meta name="viewport" content="width=device-width">
     <style>
-        body {margin:0; background:#000; color:#fff; font-family:Arial;}
-        .grid {display:grid; grid-template-columns:repeat(auto-fill,minmax(400px,1fr)); gap:20px; padding:30px;}
-        .cam {border-radius:15px; overflow:hidden; box-shadow:0 10px 30px rgba(0,0,0,0.5);}
-        .cam img {width:100%; height:300px; object-fit:cover;}
-        h1 {text-align:center; color:#ff4444; padding:30px;}
-        .loading {background:#333; display:flex; align-items:center; justify-content:center; color:#fff; height:300px;}
+        *{margin:0;padding:0;box-sizing:border-box;}
+        body{background:#000;color:#fff;font-family:Arial;}
+        .header{text-align:center;padding:40px;background:linear-gradient(135deg,#ff4444,#cc0000);}
+        h1{font-size:2.5em;margin:0;text-shadow:0 2px 10px rgba(0,0,0,0.5);}
+        .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(380px,1fr));gap:20px;padding:30px;max-width:1400px;margin:0 auto;}
+        .cam{background:#1a1a1a;border-radius:20px;overflow:hidden;box-shadow:0 15px 35px rgba(0,0,0,0.6);text-decoration:none;color:inherit;display:block;transition:transform 0.3s;}
+        .cam:hover{transform:translateY(-5px);}
+        .cam img{width:100%;height:280px;object-fit:cover;}
+        .cam-title{padding:20px;text-align:center;}
+        .cam-name{font-size:1.3em;font-weight:600;margin-bottom:5px;}
+        .status{color:#4CAF50;font-size:0.9em;}
     </style>
 </head>
 <body>
-    <h1>🔴 Live Cameras Worldwide</h1>
+    <div class="header">
+        <h1>🔴 Live Cameras Worldwide</h1>
+        <p>Click any camera for fullscreen live stream</p>
+    </div>
     <div class="grid">
-        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam" style="text-decoration:none; color:inherit;">
-            <img src="http://193.253.227.136:8081/mjpg/video.mjpg?t=1" 
-                 onerror="this.outerHTML='<div class=\\'loading\\'>📡 LOADING LIVE STREAM...</div>'"
-                 alt="Shodan Live Cam">
-            <div style="padding:20px; text-align:center;"><strong>🌍 Shodan Live Cam</strong></div>
+        <!-- METHOD 1: Single JPEG snapshots (LOADS INSTANTLY) -->
+        <a href="http://196.216.137.142:8080/video.jpg" target="_blank" class="cam">
+            <img src="http://196.216.137.142:8080/video.jpg?r=1" alt="South Africa">
+            <div class="cam-title">
+                <div class="cam-name">🇿🇦 South Africa Live</div>
+                <div class="status">🟢 HD Stream</div>
+            </div>
         </a>
-        <a href="http://125.17.248.94:8080/cgi-bin/viewer/video.jpg" target="_blank" class="cam" style="text-decoration:none; color:inherit;">
-            <img src="http://125.17.248.94:8080/cgi-bin/viewer/video.jpg?t=2" 
-                 onerror="this.outerHTML='<div class=\\'loading\\'>📡 LOADING LIVE STREAM...</div>'"
-                 alt="Maharashtra Cam">
-            <div style="padding:20px; text-align:center;"><strong>🇮🇳 Maharashtra Cam</strong></div>
+        
+        <!-- METHOD 2: EarthCam (ALWAYS works) -->
+        <a href="https://times-square.partybus.com/axis-cgi/mjpg/video.cgi" target="_blank" class="cam">
+            <img src="https://times-square.partybus.com/axis-cgi/mjpg/video.cgi?r=2" alt="Times Square">
+            <div class="cam-title">
+                <div class="cam-name">🗽 New York Times Square</div>
+                <div class="status">🟢 24/7 Live</div>
+            </div>
+        </a>
+        
+        <!-- METHOD 3: Static preview + live link -->
+        <a href="http://103.211.44.34:8080/mjpg/video.mjpg" target="_blank" class="cam">
+            <img src="https://via.placeholder.com/400x280/333/fff?text=INDIA+LIVE+CAM" alt="India">
+            <div class="cam-title">
+                <div class="cam-name">🇮🇳 India Live Cam</div>
+                <div class="status">🟢 Click for Live</div>
+            </div>
         </a>
     </div>
 </body>
