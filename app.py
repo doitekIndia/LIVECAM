@@ -49,7 +49,7 @@ def index():
         </a>
         
         <!-- METHOD 3: Static preview + live link -->
-        <a href="http://103.211.44.34:8080/mjpg/video.mjpg" target="_blank" class="cam">
+        <a href="http://81.221.159.177:8081/view/view.shtml?id=18&imagepath=%2Fmjpg%2F1%2Fvideo.mjpg&size=1" target="_blank" class="cam">
             <img src="https://via.placeholder.com/400x280/333/fff?text=INDIA+LIVE+CAM" alt="India">
             <div class="cam-title">
                 <div class="cam-name">🇮🇳 India Live Cam</div>
