@@ -28,35 +28,34 @@ def index():
     <div class="header">
         <h1>🔴 Live Cameras Worldwide</h1>
         <p>Click any camera for fullscreen live stream</p>
-    </div>
     <div class="grid">
-        <!-- METHOD 1: Single JPEG snapshots (LOADS INSTANTLY) -->
-        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
-            <img src="http://193.253.227.136:8081/mjpg/video.mjpg" alt="South Africa">
-            <div class="cam-title">
-                <div class="cam-name">🇿🇦 South Africa Live</div>
-                <div class="status">🟢 HD Stream</div>
-            </div>
-        </a>
-        
-        <!-- METHOD 2: EarthCam (ALWAYS works) -->
-        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
-            <img src="http://193.253.227.136:8081/mjpg/video.mjpg" alt="Times Square">
-            <div class="cam-title">
-                <div class="cam-name">🗽 New York Times Square</div>
-                <div class="status">🟢 24/7 Live</div>
-            </div>
-        </a>
-        
-        <!-- METHOD 3: Static preview + live link -->
-        <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
-            <img src="http://193.253.227.136:8081/mjpg/video.mjpg" alt="India">
-            <div class="cam-title">
-                <div class="cam-name">🇮🇳 India Live Cam</div>
-                <div class="status">🟢 Click for Live</div>
-            </div>
-        </a>
-    </div>
+    <!-- South Africa Cam -->
+    <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
+        <img src="http://193.253.227.136:8081/axis-cgi/jpg/image.cgi" alt="South Africa">
+        <div class="cam-title">
+            <div class="cam-name">🇿🇦 South Africa Live</div>
+            <div class="status">🟢 HD Stream</div>
+        </div>
+    </a>
+    
+    <!-- Times Square (same cam for demo) -->
+    <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
+        <img src="http://193.253.227.136:8081/axis-cgi/jpg/image.cgi" alt="Times Square">
+        <div class="cam-title">
+            <div class="cam-name">🗽 New York Times Square</div>
+            <div class="status">🟢 24/7 Live</div>
+        </div>
+    </a>
+    
+    <!-- India Cam (add real IP later) -->
+    <a href="http://193.253.227.136:8081/mjpg/video.mjpg" target="_blank" class="cam">
+        <img src="http://193.253.227.136:8081/axis-cgi/jpg/image.cgi" alt="India">
+        <div class="cam-title">
+            <div class="cam-name">🇮🇳 India Live Cam</div>
+            <div class="status">🟢 Click for Live</div>
+        </div>
+    </a>
+</div>
 </body>
 </html>
     '''
