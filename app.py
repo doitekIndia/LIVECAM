@@ -10,7 +10,7 @@ import os
 
 st.set_page_config(page_title="🔴 LiveCams", layout="wide")
 
-# Your beautiful CSS
+# Your beautiful CSS + HIDE ADD SECTION BY DEFAULT
 st.markdown("""
 <style>
 .header{text-align:center;padding:40px;background:linear-gradient(135deg,#ff4444,#cc0000);border-radius:20px;margin-bottom:30px;}
@@ -21,7 +21,7 @@ h1{font-size:3em;color:white;text-shadow:0 2px 10px rgba(0,0,0,0.5);}
 .cam-title{padding:20px;text-align:center;}
 .cam-name{font-size:1.3em;font-weight:600;}
 .status{color:#4CAF50;}
-.sidebar .sidebar-content {background: linear-gradient(180deg, #1a1a1a 0%, #000 100%);}
+#admin-section {display: none;}
 </style>
 """, unsafe_allow_html=True)
 
@@ -36,15 +36,7 @@ def get_live_snapshot(snapshot_url):
             return img
     except:
         pass
-    
-    # Smart fallback
     img = Image.new('RGB', (640, 480), color='#1a1a1a')
-    for _ in range(30):
-        x = np.random.randint(50, 590)
-        y = np.random.randint(100, 400)
-        size = np.random.randint(15, 40)
-        color = tuple(np.random.randint(80, 160, 3))
-        img.rectangle([x, y, x+size, y+size], fill=color)
     return img
 
 def img_to_base64(img):
@@ -53,7 +45,7 @@ def img_to_base64(img):
     return base64.b64encode(buffered.getvalue()).decode()
 
 def load_cameras():
-    """Load from file or return defaults"""
+    """Load cameras from file or defaults"""
     try:
         if os.path.exists('cameras.json'):
             with open('cameras.json', 'r') as f:
@@ -69,67 +61,56 @@ def load_cameras():
     ]
 
 def save_cameras(cameras):
-    """Save cameras to persistent file"""
+    """Save cameras to file"""
     with open('cameras.json', 'w') as f:
         json.dump({'cameras': cameras}, f)
 
-# Initialize session state
+# 🔐 PASSWORD CHECK using Streamlit Secrets
+def check_admin_access():
+    ADMIN_USER = st.secrets.get("ADMIN_USER", "admin")
+    ADMIN_PASS = st.secrets.get("ADMIN_PASS", "password123")
+    
+    if 'authenticated' not in st.session_state:
+        st.session_state.authenticated = False
+    
+    # Show login only if not authenticated
+    if not st.session_state.authenticated:
+        with st.sidebar:
+            st.markdown("### 🔐 **ADMIN LOGIN**")
+            username = st.text_input("👤 Username")
+            password = st.text_input("🔑 Password", type="password")
+            
+            if st.button("🚪 Login", use_container_width=True):
+                if username == ADMIN_USER and password == ADMIN_PASS:
+                    st.session_state.authenticated = True
+                    st.success("✅ Admin access granted!")
+                    st.rerun()
+                else:
+                    st.error("❌ Wrong credentials!")
+            st.markdown("---")
+        return False
+    
+    return True
+
+# Initialize cameras
 if 'cameras' not in st.session_state:
     st.session_state.cameras = load_cameras()
 
-# 🚀 SIDEBAR - ADD CAMERAS REALTIME
-with st.sidebar:
-    st.markdown("## ➕ Add Camera")
-    new_name = st.text_input("🏷️ Name", value="🌍 New Camera")
-    new_snapshot = st.text_input("📸 Snapshot", 
-        value="http://IP:PORT/axis-cgi/jpg/image.cgi")
-    new_stream = st.text_input("🔴 Stream", 
-        value="http://IP:PORT/axis-cgi/mjpg/video.cgi")
-    
-    col1, col2 = st.columns(2)
-    with col1:
-        if st.button("✅ ADD CAMERA", use_container_width=True):
-            if all([new_name, new_snapshot, new_stream]):
-                new_cam = {
-                    "name": new_name,
-                    "snapshot": new_snapshot,
-                    "stream": new_stream
-                }
-                st.session_state.cameras.append(new_cam)
-                save_cameras(st.session_state.cameras)
-                st.success("✅ Added!")
-                st.rerun()
-            else:
-                st.error("❌ Fill all fields")
-    
-    with col2:
-        if st.button("🗑️ CLEAR ALL", use_container_width=True):
-            st.session_state.cameras = []
-            save_cameras([])
-            st.success("🗑️ Cleared!")
-            st.rerun()
-    
-    st.markdown("---")
-    st.markdown(f"**📊 Total: {len(st.session_state.cameras)} cameras**")
-
 # Header
-st.markdown('<div class="header"><h1>🔴 Live Cameras Worldwide</h1></div>', unsafe_allow_html=True)
+st.markdown('<div class="header"><h1>🔴 Live Cameras Worldwide</h1><p>Click any camera for fullscreen live stream</p></div>', unsafe_allow_html=True)
 
 cameras = st.session_state.cameras
 
-# Dynamic responsive grid
+# Show cameras grid
 if cameras:
-    # Auto-adjust columns (1-4 based on camera count)
     cols_count = min(4, max(1, len(cameras) // 3 + 1))
     cols = st.columns(cols_count)
     
     for i, cam in enumerate(cameras):
         col_idx = i % cols_count
         with cols[col_idx]:
-            # Live snapshot for THIS camera
             img = get_live_snapshot(cam["snapshot"])
             img_b64 = img_to_base64(img)
-            
             st.markdown(f"""
             <a href="{cam['stream']}" target="_blank" class="cam-container" style="text-decoration:none;">
                 <img src="data:image/jpeg;base64,{img_b64}" class="cam-img">
@@ -140,38 +121,48 @@ if cameras:
             </a>
             """, unsafe_allow_html=True)
 else:
-    st.info("👆 **Add your first camera using the sidebar!**")
+    st.info("📹 No cameras available")
 
-# QUICK ADD - Popular cameras
-with st.expander("⚡ Quick Add Popular Cameras"):
-    col1, col2, col3 = st.columns(3)
-    
-    def quick_add(name, snapshot, stream):
-        new_cam = {"name": name, "snapshot": snapshot, "stream": stream}
-        st.session_state.cameras.append(new_cam)
-        save_cameras(st.session_state.cameras)
-        st.rerun()
-    
-    with col1:
-        if st.button("🇳🇴 Norway", use_container_width=True):
-            quick_add("🇳🇴 Tusten Norway", 
-                     "http://live1.tusten.no:8080/axis-cgi/jpg/image.cgi",
-                     "http://live1.tusten.no:8080/axis-cgi/mjpg/video.cgi")
-    
-    with col2:
-        if st.button("🇩🇪 Germany", use_container_width=True):
-            quick_add("🇩🇪 Anklam Germany", 
-                     "http://webcam.anklam.de/axis-cgi/jpg/image.cgi",
-                     "http://webcam.anklam.de/axis-cgi/mjpg/video.cgi")
-    
-    with col3:
-        if st.button("🌍 Europe 83", use_container_width=True):
-            quick_add("🌍 Europe 83.48", 
-                     "http://83.48.75.113:8320/axis-cgi/jpg/image.cgi",
-                     "http://83.48.75.113:8320/axis-cgi/mjpg/video.cgi")
+# 🔐 ADMIN SECTION - HIDDEN BY DEFAULT
+if check_admin_access():
+    # Show admin controls in sidebar
+    with st.sidebar:
+        st.markdown("### ✅ **ADMIN CONTROLS**")
+        st.markdown(f"**📊 {len(cameras)} cameras loaded**")
+        
+        # ADD CAMERA FORM
+        st.markdown("### ➕ **Add Camera**")
+        new_name = st.text_input("🏷️ Name")
+        new_snapshot = st.text_input("📸 Snapshot URL")
+        new_stream = st.text_input("🔴 Stream URL")
+        
+        if st.button("✅ ADD CAMERA", use_container_width=True):
+            if all([new_name, new_snapshot, new_stream]):
+                new_cam = {"name": new_name, "snapshot": new_snapshot, "stream": new_stream}
+                st.session_state.cameras.append(new_cam)
+                save_cameras(st.session_state.cameras)
+                st.success("✅ Added!")
+                st.rerun()
+        
+        # Quick add buttons
+        if st.button("🇳🇴 Add Norway", use_container_width=True):
+            st.session_state.cameras.append({
+                "name": "🇳🇴 Tusten Norway", 
+                "snapshot": "http://live1.tusten.no:8080/axis-cgi/jpg/image.cgi",
+                "stream": "http://live1.tusten.no:8080/axis-cgi/mjpg/video.cgi"
+            })
+            save_cameras(st.session_state.cameras)
+            st.rerun()
+        
+        st.markdown("---")
+        if st.button("🔓 Logout", use_container_width=True):
+            st.session_state.authenticated = False
+            st.rerun()
 
-# Footer + Auto-refresh
+# Quick stats
 st.markdown("---")
-st.caption("🔄 Auto-refreshing every 30 seconds...")
+col1, col2 = st.columns(2)
+col1.metric("📹 Total Cameras", len(cameras))
+col2.caption("🔄 Auto-refreshing every 30 seconds...")
 time.sleep(30)
 st.rerun()
